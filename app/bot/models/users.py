@@ -16,6 +16,8 @@ class User(Base):
     last_login = Column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
+    is_superuser = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)
 
     def __repr__(self):
         return f"<User {self.telegram_id}>"
