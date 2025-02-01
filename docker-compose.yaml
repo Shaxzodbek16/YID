@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: yid_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: shaxzodbek
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: yid
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  bot:
+    build: .
+    container_name: yid_container
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/yid
+    volumes:
+      - .:/app
+
+volumes:
+  pg_data:

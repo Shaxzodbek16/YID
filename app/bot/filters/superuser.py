@@ -7,11 +7,11 @@ from app.core.databases.postgres import get_session
 from app.bot.models.users import User
 
 
-class IsAdmin(BaseFilter):
+class IsSuperUser(BaseFilter):
     async def __call__(self, event: Union[Message, CallbackQuery]) -> bool:
         async with get_session() as session:
             admins = await session.execute(
-                select(User.telegram_id).where(User.is_admin == True)
+                select(User.telegram_id).where(User.is_superuser == True)
             )
             admins = admins.scalars().all()
             user_id = event.from_user.id

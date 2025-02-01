@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, func, BigInteger, Boolean
+from sqlalchemy.orm import relationship
+
 from app.core.models.base import Base
 
 
@@ -19,11 +21,10 @@ class User(Base):
     is_superuser = Column(Boolean, default=False)
     is_admin = Column(Boolean, default=False)
 
+    downloads = relationship("Downloads", back_populates="user")
+
     def __repr__(self):
         return f"<User {self.telegram_id}>"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
-    def __eq__(self, other):
-        return self.telegram_id == other.telegram_id

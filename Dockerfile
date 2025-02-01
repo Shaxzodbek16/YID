@@ -7,7 +7,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
 
+RUN chmod +x docker-entrypoint.sh
 
-CMD ["python", "-m", "app.servre"]
+RUN apt-get update && apt-get install -y postgresql-client
+
+ENTRYPOINT ["./docker-entrypoint.sh"]

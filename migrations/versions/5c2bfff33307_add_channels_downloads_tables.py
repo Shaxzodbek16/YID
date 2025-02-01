@@ -1,8 +1,8 @@
-"""initial migrations
+"""Add channels, downloads tables
 
-Revision ID: 0a5fc4749326
-Revises: 00728e8558bd
-Create Date: 2025-01-29 07:17:52.696509
+Revision ID: 5c2bfff33307
+Revises: 3ccf6dc42140
+Create Date: 2025-01-31 20:17:53.189087
 
 """
 
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "0a5fc4749326"
-down_revision: Union[str, None] = "00728e8558bd"
+revision: str = "5c2bfff33307"
+down_revision: Union[str, None] = "3ccf6dc42140"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
