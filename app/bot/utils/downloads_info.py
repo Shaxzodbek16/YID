@@ -1,36 +1,57 @@
-import pandas as pd
 import os
-from typing import Type
+from enum import Enum
+
+import pandas as pd
+from typing import Union, List
 from sqlalchemy.future import select
-from app.bot.utils.enums import FileType
+
+from app.bot.models import Downloads
+from app.bot.utils.enums import VideoType
 from app.core.databases.postgres import get_session
 
 
-async def export_model_to_file(model: Type, file_type: FileType) -> str:
+async def get_downloads_info(
+    youtube: bool = False,
+    instagram: bool = False,
+    csv: bool = False,
+    xlsx: bool = False,
+) -> Union[str, List[str], List[dict]]:
+    file_path = ""
     output_dir = "media/docs"
     os.makedirs(output_dir, exist_ok=True)
-    async with get_session() as session:
 
-        data = (await session.execute(select(model))).scalars().all()
+    async with get_session() as session:
+        if youtube:
+            result = await session.execute(
+                select(Downloads).where(Downloads.type == VideoType.YOUTUBE.value)
+            )
+        elif instagram:
+            result = await session.execute(
+                select(Downloads).where(Downloads.type == VideoType.INSTAGRAM.value)
+            )
+        data = result.scalars().all()
 
     data_dicts = [row.__dict__ for row in data]
-
     for item in data_dicts:
         item.pop("_sa_instance_state", None)
-
         for key, value in item.items():
             if isinstance(value, pd.Timestamp) or hasattr(value, "tzinfo"):
-                item[key] = value.replace(tzinfo=None) if value.tzinfo else value
-
+                item[key] = (
+                    value.replace(tzinfo=None)
+                    if getattr(value, "tzinfo", None)
+                    else value
+                )
+            elif isinstance(value, Enum):
+                item[key] = value.value
     df = pd.DataFrame(data_dicts)
-
-    file_name = f"{model.__name__}.{file_type.value}"
-    file_path = os.path.join(output_dir, file_name)
-    if file_type == FileType.XLSX:
+    if xlsx:
+        file_name = f"youtube_downloaders.xlsx"
+        file_path = os.path.join(output_dir, file_name)
         with pd.ExcelWriter(file_path, engine="xlsxwriter") as writer:
             df.to_excel(writer, index=False, sheet_name="Sheet1")
             workbook = writer.book
             worksheet = writer.sheets["Sheet1"]
+
             header_format = workbook.add_format(
                 {
                     "bold": True,
@@ -41,13 +62,15 @@ async def export_model_to_file(model: Type, file_type: FileType) -> str:
                 }
             )
             cell_format = workbook.add_format({"fg_color": "#B7DEE8", "border": 1})
+
             for col_num, col_name in enumerate(df.columns.values):
                 worksheet.write(0, col_num, col_name, header_format)
             for row_num in range(1, len(df) + 1):
                 worksheet.set_row(row_num, None, cell_format)
 
-    elif file_type == FileType.CSV:
+    elif csv:
+        file_name = f"youtube_downloaders.csv"
+        file_path = os.path.join(output_dir, file_name)
         df.to_csv(file_path, index=False)
-    else:
-        pass
+
     return file_path

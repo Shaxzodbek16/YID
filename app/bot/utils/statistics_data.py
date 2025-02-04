@@ -21,7 +21,6 @@ async def _get_top_user_by_downloads(is_video: bool) -> str:
     async with get_session() as session:
         result = await session.execute(
             select(Downloads.user_id, func.count(Downloads.id).label("download_count"))
-            .where(Downloads.type == "mp4")
             .group_by(Downloads.user_id)
             .order_by(desc("download_count"))
             .limit(5)
@@ -83,14 +82,12 @@ async def statistics_data() -> str:
 
     stats_message = (
         f"📊 <b>Statistics Overview</b>\n\n"
-        f"<b>New Users (Last 24h)</b>: {today_count}\n"
-        f"<b>New Users (Last 7 days)</b>: {week_count}\n"
-        f"<b>New Users (Last 30 days)</b>: {month_count}\n"
-        f"<b>New Users (Last 365 days)</b>: {year_count}\n"
-        f"<b>Total Users</b>: {total_count}\n\n"
-        f"<b>Admin Count</b>: {admins_count}\n\n"
-        f"<b>User with Most Video Downloads</b>:\n   {most_video_downloader}\n"
-        f"<b>User with Most MP3 Downloads</b>:\n   {most_mp3_downloader}\n"
+        f"<b>New Users (Last 24h)</b>: {today_count:,}\n"
+        f"<b>New Users (Last 7 days)</b>: {week_count:,}\n"
+        f"<b>New Users (Last 30 days)</b>: {month_count:,}\n"
+        f"<b>New Users (Last 365 days)</b>: {year_count:,}\n"
+        f"<b>Total Users</b>: {total_count:,}\n\n"
+        f"<b>Admin Count</b>: {admins_count:,}\n\n"
         f"<b>Most Downloaded Format</b>: {most_downloaded_format}\n"
     )
 

@@ -1,12 +1,12 @@
 from enum import Enum
 
 
-class VideoType(Enum):
-    YOUTUBE = "youtube"
-    INSTAGRAM = "instagram"
+class VideoType(str, Enum):
+    YOUTUBE = "YOUTUBE"
+    INSTAGRAM = "INSTAGRAM"
 
 
-class FileType(Enum):
+class FileType(str, Enum):
     XLSX = "xlsx"
     CSV = "csv"
     ALL_FORMAT = "all_format"

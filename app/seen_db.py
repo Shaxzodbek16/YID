@@ -13,14 +13,8 @@ fake = Faker()
 
 
 async def seed_db():
-    """
-    Seeds the PostgreSQL database with mock data for testing/development.
-    Creates 100 entries for each of User, Channel, and Downloads.
-    """
-
     async with get_session() as session:
-        # 1. Generate 100 Users
-        for _ in range(1000):
+        for _ in range(100_000):
             user = User(
                 telegram_id=fake.random_number(digits=10, fix_len=False),
                 username=fake.user_name(),
@@ -34,52 +28,39 @@ async def seed_db():
                 is_admin=False,
             )
             session.add(user)
+            await session.commit()
 
-        # Commit so user IDs are generated
-        await session.commit()
-
-        # Retrieve user IDs to reference in Downloads
-        user_ids = (await session.scalars(select(User.id))).all()
+        user_ids = (await session.scalars(select(User.telegram_id))).all()
+        print("Users created successfully!")
 
         # 2. Generate 100 Channels
-        for _ in range(1000):
+        for _ in range(10):
             channel = Channel(
                 channel_name=fake.company(),
-                channel_link=f"https://t.me/{fake.user_name()}",  # or any link you like
+                channel_link=f"https://t.me/{fake.user_name()}",
+                uuid4=fake.uuid4(),
             )
             session.add(channel)
 
         await session.commit()
-
-        # 3. Generate 100 Downloads
-        # Assuming your VideoType has some enum values. Adjust as necessary.
-        video_types = list(VideoType)
+        print("Channels created successfully!")
+        video_types = [VideoType.INSTAGRAM.value, VideoType.YOUTUBE.value]
         formats = ["144p", "240p", "360p", "480p", "720p", "1080p", "MP3"]
 
-        for _ in range(1000):
+        for _ in range(10_000):
             download = Downloads(
                 url=fake.url(),
-                type=random.choice(
-                    video_types
-                ),  # e.g. VideoType.MP3, VideoType.MP4, etc.
-                is_video=random.choice([True, False]),
+                type=random.choice(video_types),
                 format=random.choice(formats),
                 user_id=random.choice(user_ids),
             )
             session.add(download)
 
         await session.commit()
-
-    print("✅ 100 mock rows have been inserted into each table!")
-    print("🚀 You can now run your FastAPI app and test the endpoints.")
-
-
-async def main():
-    for i in range(100):
-        await asyncio.sleep(0.2)
-        await seed_db()
-        print(f"✅ 100 mock rows have been inserted into each table! {i+1}")
+        print("Downloads created successfully!")
+        await session.close()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(seed_db())
+    print("Database seeded successfully!")

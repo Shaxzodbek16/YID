@@ -20,11 +20,11 @@ async def start(message: Message):
     current_user = await get_user(message.from_user.id)
     if current_user.is_superuser:
         await message.answer(
-            superuser_message, reply_markup=await admin_menu(is_admin=True)
+            superuser_message, reply_markup=await admin_menu(is_superuser=True)
         )
+        return
     elif current_user.is_admin:
-        await message.answer(
-            admin_message, reply_markup=await admin_menu(is_admin=False)
-        )
+        await message.answer(admin_message, reply_markup=await admin_menu())
+        return
     else:
         await message.answer(start_message, reply_markup=await user_step_1())

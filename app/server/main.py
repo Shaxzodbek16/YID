@@ -10,6 +10,7 @@ from app.core.utils.superuser import create_superuser
 from app.bot.routers.start import router as start_router
 from app.bot.routers.help import router as help_router
 from app.bot.routers.admin import router as admin_router
+from app.bot.routers.user import router as user_router
 
 settings = get_settings()
 
@@ -27,6 +28,7 @@ async def main():
     dp.include_router(start_router)
     dp.include_router(admin_router)
     dp.include_router(help_router)
+    dp.include_router(user_router)
 
     await dp.start_polling(bot)
 

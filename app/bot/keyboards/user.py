@@ -28,3 +28,19 @@ async def format_keyboard() -> InlineKeyboardMarkup:
         ]
     )
     return kb
+
+
+async def insta_option_inline() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="🎥 MP4", callback_data="instagram_format:mp4"
+                ),
+                InlineKeyboardButton(
+                    text="🎵 MP3", callback_data="instagram_format:mp3"
+                ),
+            ]
+        ]
+    )
+    return kb

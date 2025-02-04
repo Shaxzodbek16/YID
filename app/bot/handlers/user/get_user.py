@@ -1,5 +1,3 @@
-# app/bot/handlers/user/get_user.py
-
 from sqlalchemy import select
 from app.bot.models import User
 from app.core.databases.postgres import get_session

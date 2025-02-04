@@ -2,12 +2,10 @@
 
 **YID** is a free and open-source Python bot for downloading videos from YouTube and Instagram.
 
-# **Features:**
+## Features:
 
 * Downloads in various formats (MP4, etc.)
 * Supports YouTube and Instagram
 * Selects from available resolutions
 * Handles files up to 2GB
 * 100% free and open-source
-
-### **I've removed some redundancy and made the instructions more concise. Feel free to adjust it further to your liking.**
