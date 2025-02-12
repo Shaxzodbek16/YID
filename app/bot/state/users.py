@@ -8,3 +8,8 @@ class AddChanel(StatesGroup):
 
 class InstagramState(StatesGroup):
     instagram_link = State()
+
+
+class YouTubeStates(StatesGroup):
+    waiting_for_url = State()
+    waiting_for_resolution_choice = State()

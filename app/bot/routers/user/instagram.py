@@ -88,16 +88,12 @@ async def send_video_with_retries(
 
 @router.callback_query(F.data.startswith("instagram_format:"))
 async def instagram_download_mp3(callback: CallbackQuery, state: FSMContext):
-    """
-    Handle the user's choice of MP4 or MP3 download format and send the final file.
-    """
     link = (await state.get_data()).get("link")
     format_ = callback.data.split(":")[-1]
     cookies_path = os.path.abspath(
         os.path.join("media", "cookies", "www.instagram.com_cookies.txt")
     )
 
-    # Filename and path for saving the downloaded file
     filename = f"{callback.from_user.id}_instagram"
     media_path = os.path.abspath(os.path.join("media"))
 
